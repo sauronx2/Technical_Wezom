@@ -8,6 +8,4 @@ public class CabinetPage extends CabinetElements {
     public CabinetPage(WebDriver driver) {
         super(driver);
     }
-
-
 }

@@ -97,7 +97,7 @@ public class HomeElements extends AbstractBasePage {
         return waitVisibleOfElement(HOUSEHOLD_APPLIANCES);
     }
 
-    public WebElement getFansCategory() {
+    public WebElement getFansProduct() {
         return waitVisibleOfElement(FANS_CATEGORY);
     }
 
@@ -115,6 +115,9 @@ public class HomeElements extends AbstractBasePage {
 
     public WebElement getBasketPopUpText() {
         return waitVisibleOfElement(BASKET_POPUP_TEXT);
+    }
+    public WebElement getBasketPopUpCartBody() {
+        return waitVisibleOfElement(BASKET_POPUP_CART_BODY);
     }
 
     public WebElement getBasketPopUpTotalCostValue() {

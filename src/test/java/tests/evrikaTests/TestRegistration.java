@@ -1,32 +1,19 @@
 package tests.evrikaTests;
 
 import elements.CabinetElements;
-import org.testng.annotations.DataProvider;
+import io.qameta.allure.Description;
+
 import org.testng.annotations.Test;
 import pages.everikaPages.CheckoutPage;
 import pages.everikaPages.HomePage;
 import tests.AbstractTestBase;
+import utils.DataProviderCredentials;
 
 public class TestRegistration extends AbstractTestBase {
+    public final String homePageUrl = "https://evrika.wezom.agency/";
 
-    private final String firstName = "Oleksandr";
-    private final String lastName = "Serhadov";
-    private final String middleName = "Dmitrievich";
-    private final String number = "0936192812";
-    private final String email = "wezomtest@gmail.com";
-    private final String password = "testPass321";
-    private final String homePageUrl = "https://evrika.wezom.agency/";
-
-    @DataProvider
-    public Object[][] randomUserDataRegistration() {
-        return new Object[][]{
-                {firstName, lastName, number,
-                        getRandomNumber() + email,
-                        password, password, middleName}
-        };
-    }
-
-    @Test(dataProvider = "randomUserDataRegistration")
+    @Test(dataProvider = "randomUserDataRegistration", dataProviderClass = DataProviderCredentials.class)
+    @Description("End-to-End registration with adding two product in basket and submitting order")
     public void checkRegistration(String firstName, String lastName, String number, String email,
                                   String password, String passConf, String middleName) {
         HomePage homePage = new HomePage(driver);
@@ -50,32 +37,33 @@ public class TestRegistration extends AbstractTestBase {
         homePage
                 .moveToProductCatalogueMenu()
                 .moveToHouseHoldAppliances()
-                .moveAndClickToFansCategory()
-                .clickOnProductAddToCartBtn("Вентилятор Maxwell MW-3546")
+                .moveAndClickToFans()
+                .clickOnProductAddToBasketBtn("Вентилятор Maxwell MW-3546")
                 .clickXClosePopUpBtn()
-                .clickOnProductAddToCartBtn("Вентилятор Tefal VF6670F0");
+                .clickOnProductAddToBasketBtn("Вентилятор Tefal VF6670F0");
 
         assertEquals(homePage.getBasketPopUpText().getText(), "Корзина");
 
-        double valueInBasketPopUp = homePage.getParsedPriceValue(homePage.getBasketPopUpTotalCostValue());
-
         homePage
-                .clickXClosePopUpBtn()
-                .moveToBasketAncClickSubmitOrder();
-
-        double valueInCheckout = homePage.getParsedPriceValue(checkoutPage.getTotalCost());
-        assertEquals(valueInBasketPopUp, valueInCheckout);
+                .getParsedPriceInBasketAndEqualsPriceInCheckout();
 
         checkoutPage
                 .setMiddleNameField(middleName)
                 .clickDeliveryOrPaymentType("Самовывоз из магазина")
                 .clickSelectStoreDropDownMenu()
-                .clickStoreInList(1)
+                .clickStoreInList(0)
                 .clickDeliveryOrPaymentType("Картой онлайн");
 
         assertTrue(checkoutPage.isVisibleContactsOtherRecipientRadioBtn());
 
         checkoutPage
                 .clickSubmitOrderBtn();
+
+        assertTrue(checkoutPage.getOrderCreatingErrorMessage().isDisplayed());
+
+        checkoutPage
+                .clickOrderErrorBtn();
+
+        assertTrue(checkoutPage.isVisibleOrderCreatingErrorMessage());
     }
 }

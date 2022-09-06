@@ -9,6 +9,5 @@ public class FansPage extends FansElements {
     public FansPage(WebDriver driver) {
         super(driver);
     }
-
 }
 

@@ -16,14 +16,14 @@ public class HomePage extends HomeElements {
         super(driver);
     }
 
-    @Step("")
+    @Step("Click on registration icon and click 'Registration'")
     public HomePage goToRegistrationWindow() {
         getRegistrationAuthorizationBtn().click();
         getRegistrationPopUpBtn().click();
         return this;
     }
 
-    @Step("")
+    @Step("Enter credentials in registration fields")
     public HomePage enterRegistrationCredentials(String firstName, String lastName, String number, String email, String password, String passConf) {
         getFirstNameField().sendKeys(firstName);
         getLastNameField().sendKeys(lastName);
@@ -34,10 +34,11 @@ public class HomePage extends HomeElements {
         getPasswordField().sendKeys(password);
         sleep(200);
         getPasswordConfirmationField().sendKeys(passConf);
+        captureScreen(driver);
         return this;
     }
 
-    @Step("")
+    @Step("Click on 'Agree Terms Of Use' checkbox")
     public HomePage clickIAgreeCheckBox() {
         scrollForElement(getIAgreeCheckBox(), driver);
         Actions actions = new Actions(driver);
@@ -49,38 +50,49 @@ public class HomePage extends HomeElements {
         return this;
     }
 
+    @Step("Click on 'Submit registration' button")
     public HomePage clickSubmitRegistrationBtn() {
         getSubmitRegistrationBtn().click();
         return this;
     }
 
+    @Step("Move cursor to 'Product catalogue' menu")
     public HomePage moveToProductCatalogueMenu() {
         moveToElement(driver, getProductCatalogueMenu());
         return this;
     }
 
+    @Step("Move cursor to 'House hold Appliances' category")
     public HomePage moveToHouseHoldAppliances() {
         moveToElement(driver, getHouseHoldAppliances());
         return this;
     }
 
-    public HomePage moveAndClickToFansCategory() {
-        moveToElement(driver, getFansCategory());
-        getFansCategory().click();
+    @Step("Move cursor to 'Fans' and click")
+    public HomePage moveAndClickToFans() {
+        moveToElement(driver, getFansProduct());
+        getFansProduct().click();
         return this;
     }
 
+    @Step("Move cursor to basket and click 'Submit order'")
     public HomePage moveToBasketAncClickSubmitOrder() {
         ElementUtil.moveToElement(driver, getBasketBtn());
         getSubmitOrderBtn().click();
         return this;
     }
 
-    public HomePage clickOnProductAddToCartBtn(String productName) {
+    @Step("Chose product by 'productName' and click add to basket")
+    public HomePage clickOnProductAddToBasketBtn(String productName) {
+        scrollForElement(getCurrentPurchaseBasketBtn(productName), driver);
         getCurrentPurchaseBasketBtn(productName).click();
+        if (getBasketPopUpCartBody().isDisplayed()) {
+            captureScreen(driver);
+        }
         return this;
     }
 
+    @Step("Click on 'X - close' button in popup window")
     public HomePage clickXClosePopUpBtn() {
         getXClosePopUpBtn().click();
         return this;
@@ -92,5 +104,15 @@ public class HomePage extends HomeElements {
         double price = Double.parseDouble(amountString.replaceAll("[^\\d.]", ""));
         totalSum = totalSum + price;
         return totalSum;
+    }
+
+    @Step("Get price in basket and checkout for equals it")
+    public void getParsedPriceInBasketAndEqualsPriceInCheckout() {
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
+        double valueInBasketPopUp = getParsedPriceValue(getBasketPopUpTotalCostValue());
+        clickXClosePopUpBtn();
+        moveToBasketAncClickSubmitOrder();
+        double valueInCheckout = getParsedPriceValue(checkoutPage.getTotalCost());
+        assertEquals(valueInBasketPopUp, valueInCheckout);
     }
 }

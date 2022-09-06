@@ -67,6 +67,7 @@ public abstract class AbstractBasePage extends Base {
             return null;
         }
     }
+
     protected boolean waitInvisibilityOfElementLocated(String locator) {
         try {
             return wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(locator)));
