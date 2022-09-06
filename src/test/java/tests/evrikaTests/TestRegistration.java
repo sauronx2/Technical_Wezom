@@ -14,8 +14,8 @@ public class TestRegistration extends AbstractTestBase {
 
     @Test(dataProvider = "randomUserDataRegistration", dataProviderClass = DataProviderCredentials.class)
     @Description("End-to-End registration with adding two product in basket and submitting order")
-    public void checkRegistration(String firstName, String lastName, String number, String email,
-                                  String password, String passConf, String middleName) {
+    public void checkRegistrationWithOrdering(String firstName, String lastName, String number, String email,
+                                              String password, String passConf, String middleName) {
         HomePage homePage = new HomePage(driver);
         CheckoutPage checkoutPage = new CheckoutPage(driver);
         CabinetElements cabinetElements = new CabinetElements(driver);
