@@ -7,7 +7,7 @@
         <listener class-name="listner.RetryTestListener"/>
     </listeners>
 
-    <test name="Balance tests">
+    <test name="Registration tests">
         <classes>
             <class name="tests.evrikaTests.TestRegistration"/>
         </classes>
