@@ -1,5 +1,6 @@
 package pages;
 
+import common.Base;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
@@ -14,7 +15,8 @@ import java.util.List;
 
 import static org.testng.AssertJUnit.fail;
 
-public abstract class AbstractBasePage {
+public abstract class AbstractBasePage extends Base {
+
     protected WebDriver driver;
     protected WebDriverWait wait;
     protected final Logger logger;
@@ -63,6 +65,15 @@ public abstract class AbstractBasePage {
             logger.error("No presence elements: " + locator);
             fail("No presence elements: " + locator);
             return null;
+        }
+    }
+    protected boolean waitInvisibilityOfElementLocated(String locator) {
+        try {
+            return wait.until(ExpectedConditions.invisibilityOfElementLocated(By.xpath(locator)));
+        } catch (WebDriverException e) {
+            logger.error("Element is visibility: " + locator);
+            fail("Element is visibility: " + locator);
+            return false;
         }
     }
 }

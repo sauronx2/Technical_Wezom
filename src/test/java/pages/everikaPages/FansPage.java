@@ -1,4 +1,14 @@
 package pages.everikaPages;
 
-public class FansPage {
+import elements.FansElements;
+import org.openqa.selenium.WebDriver;
+import utils.ElementUtil;
+
+public class FansPage extends FansElements {
+
+    public FansPage(WebDriver driver) {
+        super(driver);
+    }
+
 }
+

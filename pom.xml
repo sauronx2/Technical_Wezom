@@ -93,42 +93,4 @@
         </dependency>
     </dependencies>
 
-    <profiles>
-        <!--HEADLESS MODE-->
-        <profile>
-            <id>headless_enabled</id>
-            <properties>
-                <headless.mode>--headless</headless.mode>
-            </properties>
-        </profile>
-        <profile>
-            <id>headless_disabled</id>
-            <properties>
-                <headless.mode/>
-            </properties>
-        </profile>
-        <!-- GRID -->
-        <profile>
-            <id>nogrid</id>
-            <properties>
-                <grid></grid>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>selenoid</id>
-            <properties>
-                <grid>http://localhost:4444/wd/hub</grid>
-            </properties>
-        </profile>
-        <profile>
-            <id>wezom</id>
-            <properties>
-                <site.url>https://evrika.wezom.agency/</site.url>
-            </properties>
-        </profile>
-    </profiles>
-
 </project>

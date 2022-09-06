@@ -3,13 +3,16 @@ package tests.evrikaTests;
 import elements.CabinetElements;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import pages.everikaPages.CabinetPage;
+import pages.everikaPages.CheckoutPage;
 import pages.everikaPages.HomePage;
 import tests.AbstractTestBase;
 
-import static utils.ElementUtil.moveToElement;
-
 public class TestRegistration extends AbstractTestBase {
+
+    private final String firstName = "Oleksandr";
+    private final String lastName = "Serhadov";
+    private final String middleName = "Dmitrievich";
+    private final String number = "0936192812";
     private final String email = "wezomtest@gmail.com";
     private final String password = "testPass321";
     private final String homePageUrl = "https://evrika.wezom.agency/";
@@ -17,15 +20,17 @@ public class TestRegistration extends AbstractTestBase {
     @DataProvider
     public Object[][] randomUserDataRegistration() {
         return new Object[][]{
-                {"Oleksandr", "Serhadov", "0936192812",
-                        createRandomNumber() + email,
-                        password, password}
+                {firstName, lastName, number,
+                        getRandomNumber() + email,
+                        password, password, middleName}
         };
     }
 
     @Test(dataProvider = "randomUserDataRegistration")
-    public void checkRegistration(String firstName, String lastName, String number, String email, String password, String passConf) {
+    public void checkRegistration(String firstName, String lastName, String number, String email,
+                                  String password, String passConf, String middleName) {
         HomePage homePage = new HomePage(driver);
+        CheckoutPage checkoutPage = new CheckoutPage(driver);
         CabinetElements cabinetElements = new CabinetElements(driver);
 
         openUrl(homePageUrl);
@@ -45,7 +50,32 @@ public class TestRegistration extends AbstractTestBase {
         homePage
                 .moveToProductCatalogueMenu()
                 .moveToHouseHoldAppliances()
-                .moveAndClickToFansCategory();
+                .moveAndClickToFansCategory()
+                .clickOnProductAddToCartBtn("Вентилятор Maxwell MW-3546")
+                .clickXClosePopUpBtn()
+                .clickOnProductAddToCartBtn("Вентилятор Tefal VF6670F0");
 
+        assertEquals(homePage.getBasketPopUpText().getText(), "Корзина");
+
+        double valueInBasketPopUp = homePage.getParsedPriceValue(homePage.getBasketPopUpTotalCostValue());
+
+        homePage
+                .clickXClosePopUpBtn()
+                .moveToBasketAncClickSubmitOrder();
+
+        double valueInCheckout = homePage.getParsedPriceValue(checkoutPage.getTotalCost());
+        assertEquals(valueInBasketPopUp, valueInCheckout);
+
+        checkoutPage
+                .setMiddleNameField(middleName)
+                .clickDeliveryOrPaymentType("Самовывоз из магазина")
+                .clickSelectStoreDropDownMenu()
+                .clickStoreInList(1)
+                .clickDeliveryOrPaymentType("Картой онлайн");
+
+        assertTrue(checkoutPage.isVisibleContactsOtherRecipientRadioBtn());
+
+        checkoutPage
+                .clickSubmitOrderBtn();
     }
 }
