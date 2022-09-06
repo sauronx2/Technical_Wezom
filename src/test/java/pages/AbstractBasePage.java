@@ -13,8 +13,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-import static org.testng.AssertJUnit.fail;
-
 public abstract class AbstractBasePage extends Base {
 
     protected WebDriver driver;
