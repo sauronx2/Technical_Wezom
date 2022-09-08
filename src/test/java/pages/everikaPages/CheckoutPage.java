@@ -5,6 +5,7 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static utils.CommonActions.scrollForElement;
 
 public class CheckoutPage extends CheckoutElements {
@@ -13,6 +14,7 @@ public class CheckoutPage extends CheckoutElements {
         super(driver);
     }
 
+    private final String middleNameField = "Отчество";
     @Step("Click delivery or payment type")
     public CheckoutPage clickDeliveryOrPaymentType(String deliveryOrPayment) {
         getDeliveryOrPaymentType(deliveryOrPayment).click();
@@ -21,7 +23,11 @@ public class CheckoutPage extends CheckoutElements {
 
     @Step("Set middle name")
     public CheckoutPage setMiddleNameField(String middleName) {
-        getMiddleNameField().sendKeys(middleName);
+        getCredentialsFieldTypeToBeClickable(middleNameField).sendKeys(middleName);
+        String x = getCredentialsFieldTypeToBeVisible(middleNameField).getAttribute("value");
+        if (x.contains(middleName)) {
+            captureScreen(driver);
+        }
         return this;
     }
 

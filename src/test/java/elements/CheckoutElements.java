@@ -12,7 +12,7 @@ public class CheckoutElements extends AbstractBasePage {
     }
 
     private final static String TOTAL_COST = "//div[@class='checkout-step__total-cost']";
-    private final static String MIDDLE_NAME_FIELD = "//div[@class='form-control']/input[@class='form-input ']";
+    private final static String CHECKOUT_FIELD_TYPE = "//div[@class='form-control']/label[@class='form-label'][contains(text(), 'Отчество')]/../input[@class='form-input ']";
     private final static String SELECT_STORE_DROP_DOWN_MENU = "//div[@class='pickup__selected']";
     private final static String STORE_LIST = "//div/label/span[@class='pickup__option-inner']";
     private final static String SUBMIT_ORDER_BTN = "//div[@class='order__submit']/button[@class='button button_one button_full']";
@@ -32,12 +32,16 @@ public class CheckoutElements extends AbstractBasePage {
         return waitVisibleOfElement(TOTAL_COST);
     }
 
-    public boolean isVisibleContactsOtherRecipientRadioBtn() {
+    public boolean isInvisibilityContactsOtherRecipientRadioBtn() {
         return waitInvisibilityOfElementLocated(CONTACTS_OTHER_RECIPIENT_RADIO_BTN);
     }
 
-    public WebElement getMiddleNameField() {
-        return waitClickableElementByXpath(MIDDLE_NAME_FIELD);
+    public WebElement getCredentialsFieldTypeToBeClickable(String fieldType) {
+        return waitClickableElementByXpath(String.format(CHECKOUT_FIELD_TYPE, fieldType));
+    }
+
+    public WebElement getCredentialsFieldTypeToBeVisible(String fieldType) {
+        return waitVisibleOfElement(String.format(CHECKOUT_FIELD_TYPE, fieldType));
     }
 
     public WebElement getSelectStoreDropDownMenu() {
@@ -55,9 +59,11 @@ public class CheckoutElements extends AbstractBasePage {
     public WebElement getOrderCreatingErrorMessage() {
         return waitVisibleOfElement(ORDER_CREATING_ERROR_POPUP_MESSAGE);
     }
+
     public boolean isVisibleOrderCreatingErrorMessage() {
         return waitInvisibilityOfElementLocated(ORDER_CREATING_ERROR_POPUP_MESSAGE);
     }
+
     public WebElement getOrderCreatingErrorBtn() {
         return waitVisibleOfElement(ORDER_CREATING_ERROR_POPUP_OK_BTN);
     }

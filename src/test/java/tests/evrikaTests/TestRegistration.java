@@ -54,7 +54,7 @@ public class TestRegistration extends AbstractTestBase {
                 .clickStoreInList(0)
                 .clickDeliveryOrPaymentType("Картой онлайн");
 
-        assertTrue(checkoutPage.isVisibleContactsOtherRecipientRadioBtn());
+        assertTrue(checkoutPage.isInvisibilityContactsOtherRecipientRadioBtn());
 
         checkoutPage
                 .clickSubmitOrderBtn();
