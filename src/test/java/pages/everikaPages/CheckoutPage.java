@@ -5,7 +5,6 @@ import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static utils.CommonActions.scrollForElement;
 
 public class CheckoutPage extends CheckoutElements {
