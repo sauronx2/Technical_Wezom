@@ -1,4 +1,4 @@
-# Test automation framework AQA
+# Test automation framework
 
 
 

@@ -13,6 +13,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <aspectj.version>1.9.6</aspectj.version>
+        <allure-testng.version>2.6.0</allure-testng.version>
     </properties>
 
     <build>
@@ -97,4 +98,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
 </project>

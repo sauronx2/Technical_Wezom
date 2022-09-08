@@ -13,4 +13,5 @@
             <class name="tests.evrikaTests.TestRegistration"/>
         </classes>
     </test>
+
 </suite>
