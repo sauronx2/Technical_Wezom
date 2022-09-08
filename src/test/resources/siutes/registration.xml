@@ -5,6 +5,7 @@
 
     <listeners>
         <listener class-name="listner.RetryTestListener"/>
+        <listener class-name="listner.TestListener"/>
     </listeners>
 
     <test name="Registration tests">
