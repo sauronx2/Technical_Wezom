@@ -3,9 +3,7 @@ package tests;
 import common.Base;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import listner.TestListener;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
-import org.openqa.selenium.Dimension;
+import lombok.Getter;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -16,43 +14,33 @@ import org.testng.annotations.Listeners;
 @Listeners(TestListener.class)
 public abstract class AbstractTestBase extends Base {
 
+    @Getter
     protected WebDriver driver;
-
-    private final Logger logger = LogManager.getLogger(AbstractTestBase.class);
+    protected ChromeOptions chromeOptions;
 
     @BeforeMethod
     public void setup() {
-        logger.info("Start set up driver");
-        String headless = System.getProperty("headless");
-        if (headless == null) {
-            headless = "";
-        }
-        ChromeOptions chromeOptions = new ChromeOptions();
-        if (headless.contains("true")) {
-            chromeOptions.setHeadless(true);
+        System.out.println("Finish set up driver");
+        var headless = System.getProperty("headless");
+        chromeOptions = new ChromeOptions();
+        chromeOptions.addArguments("--remote-allow-origins=*");
+        if (headless != null && headless.equals("true")) {
+            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--disable-gpu");
         }
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver(chromeOptions);
-
-        if (headless.equals("headless")) {
-            driver.manage().window().setSize(new Dimension(1920, 1200));
-        } else {
-            driver.manage().window().maximize();
-        }
-        logger.info("Finish set up driver");
+        driver.manage().window().maximize();
+        System.out.println("Start set up driver");
     }
 
     @AfterMethod(alwaysRun = true)
     public void quiteDriver() {
-        logger.info("Quite driver");
+        System.out.println("Quite driver");
         driver.quit();
     }
 
     public void openUrl(String url) {
         driver.get(url);
-    }
-
-    public WebDriver getDriver() {
-        return driver;
     }
 }
