@@ -1,46 +1,54 @@
 package tests;
 
 import common.Base;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import listner.TestListener;
 import lombok.Getter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
+
+import static io.github.bonigarcia.wdm.WebDriverManager.chromedriver;
+import static java.lang.Boolean.parseBoolean;
 
 @Listeners(TestListener.class)
-public abstract class AbstractTestBase extends Base {
+public abstract class AbstractBaseTest extends Base {
 
     @Getter
     protected WebDriver driver;
     protected ChromeOptions chromeOptions;
+    public static final Logger logger = LogManager.getLogger(AbstractBaseTest.class);
 
+    @Parameters({"headless"})
     @BeforeMethod
-    public void setup() {
-        System.out.println("Finish set up driver");
-        var headless = System.getProperty("headless");
+    public void setup(@Optional("false") String headless) {
+        logger.info("Setting up driver");
+
         chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--remote-allow-origins=*");
-        if (headless != null && headless.equals("true")) {
+
+        if (parseBoolean(headless)) {
             chromeOptions.addArguments("--headless");
             chromeOptions.addArguments("--disable-gpu");
         }
-        WebDriverManager.chromedriver().setup();
+
+        chromedriver().setup();
         driver = new ChromeDriver(chromeOptions);
         driver.manage().window().maximize();
-        System.out.println("Start set up driver");
+
+        logger.info("Driver setup completed");
     }
 
     @AfterMethod(alwaysRun = true)
-    public void quiteDriver() {
-        System.out.println("Quite driver");
+    public void quitDriver() {
+        logger.info("Quitting driver");
         driver.quit();
     }
 
     public void openUrl(String url) {
         driver.get(url);
+        logger.info("Opened URL: " + url);
     }
 }
