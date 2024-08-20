@@ -27,6 +27,7 @@ public abstract class AbstractBaseTest extends Base {
     @Getter
     protected WebDriver driver;
     protected ChromeOptions chromeOptions;
+    protected String browserVersion = "114.0";
     public static final Logger logger = LogManager.getLogger(AbstractBaseTest.class);
 
     @Parameters({"headless", "useSelenoid"})
@@ -37,6 +38,7 @@ public abstract class AbstractBaseTest extends Base {
 
         chromeOptions = new ChromeOptions();
         chromeOptions.addArguments("--remote-allow-origins=*");
+        chromeOptions.setBrowserVersion(browserVersion);
 
         if (parseBoolean(headless)) {
             chromeOptions.addArguments("--headless");
@@ -47,7 +49,7 @@ public abstract class AbstractBaseTest extends Base {
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             capabilities.setBrowserName("chrome");
-            capabilities.setVersion("114.0");
+            capabilities.setVersion(browserVersion);
 
             // Используем W3C-совместимые ключи через 'selenoid:options'
             Map<String, Object> selenoidOptions = new HashMap<>();
