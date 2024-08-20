@@ -9,9 +9,9 @@
     </listeners>
 
     <test name="Registration tests">
-        <classes>
-            <class name="tests.evrikaTests.TestRegistration"/>
-        </classes>
+        <packages>
+            <package name="tests.evrikaTests.*"/>
+        </packages>
     </test>
 
 </suite>
