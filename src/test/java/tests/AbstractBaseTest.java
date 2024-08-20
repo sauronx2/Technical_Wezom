@@ -61,7 +61,7 @@ public abstract class AbstractBaseTest extends Base {
 
             capabilities.setCapability("selenoid:options", selenoidOptions);
 
-            var selenoidUrl = new URL("http://localhost:4444/wd/hub");
+            var selenoidUrl = new URL("http://selenoid:4444/wd/hub");
             driver = new RemoteWebDriver(selenoidUrl, capabilities);
         } else {
             chromedriver().setup();
