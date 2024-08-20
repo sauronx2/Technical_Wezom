@@ -13,7 +13,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testng.annotations.*;
 
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ public abstract class AbstractBaseTest extends Base {
     @Parameters({"headless", "useSelenoid"})
     @BeforeMethod
     @SneakyThrows
-    public void setup(@Optional("false") String headless, @Optional("false") String useSelenoid) {
+    public void setup(Method method, @Optional("false") String headless, @Optional("false") String useSelenoid) {
         logger.info("Setting up driver");
 
         chromeOptions = new ChromeOptions();
@@ -51,11 +54,17 @@ public abstract class AbstractBaseTest extends Base {
             capabilities.setBrowserName("chrome");
             capabilities.setVersion(browserVersion);
 
+            // Генерация уникального имени файла для видео
+            String testClassName = method.getDeclaringClass().getSimpleName();
+            String testMethodName = method.getName();
+            String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+            String videoName = testClassName + "_" + testMethodName + "_" + timestamp + ".mp4";
+
             // Используем W3C-совместимые ключи через 'selenoid:options'
             Map<String, Object> selenoidOptions = new HashMap<>();
             selenoidOptions.put("enableVNC", true);
             selenoidOptions.put("enableVideo", true);
-            selenoidOptions.put("videoName", "test-video.mp4");
+            selenoidOptions.put("videoName", videoName);
             selenoidOptions.put("screenResolution", "1920x1080x24");
             selenoidOptions.put("videoFrameRate", 24);
 
@@ -69,7 +78,7 @@ public abstract class AbstractBaseTest extends Base {
         }
 
         driver.manage().window().maximize();
-        logger.info("Driver setup completed");
+        logger.info("Driver setup completed for test method: " + method.getName());
     }
 
     @AfterMethod(alwaysRun = true)
