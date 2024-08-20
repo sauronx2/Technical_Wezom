@@ -27,7 +27,7 @@ public abstract class AbstractBaseTest extends Base {
     @Getter
     protected WebDriver driver;
     protected ChromeOptions chromeOptions;
-    protected String browserVersion = "114.0";
+    public static final String browserVersion = "126.0";
     public static final Logger logger = LogManager.getLogger(AbstractBaseTest.class);
 
     @Parameters({"headless", "useSelenoid"})

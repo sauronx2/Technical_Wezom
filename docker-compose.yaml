@@ -1,0 +1,98 @@
+services:
+  selenoid:
+    image: aerokube/selenoid:latest-release
+    container_name: selenoid
+    ports:
+      - "4444:4444"
+    environment:
+      - "OVERRIDE_VIDEO_OUTPUT_DIR=/opt/selenoid/video"
+      - "LOG_LEVEL=DEBUG"  # Увеличиваем уровень логирования
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "./config/browsers.json:/etc/selenoid/browsers.json"
+      - "./selenoid/video:/opt/selenoid/video"
+      - "./selenoid/logs:/opt/selenoid/logs"
+    command: ["-conf", "/etc/selenoid/browsers.json",
+              "-limit", "20",
+              "-retry-count", "1000",
+              "-video-output-dir", "/opt/selenoid/video",
+              "-log-output-dir", "/opt/selenoid/logs",
+              "-max-timeout", "5m",
+              "-session-attempt-timeout", "2m",
+              "-timeout", "2m",
+              "-service-startup-timeout", "2m",
+              "-container-network", "custom_net"]
+    mem_limit: 1g
+    cpus: 1.0
+    networks:
+      custom_net:
+        aliases:
+          - selenoid
+
+  selenoid-ui:
+    image: aerokube/selenoid-ui:latest-release
+    container_name: selenoid-ui
+    ports:
+      - "8080:8080"
+    depends_on:
+      - selenoid
+    command: -selenoid-uri 'http://selenoid:4444'
+    mem_limit: 512m
+    cpus: 0.5
+    networks:
+      custom_net:
+        aliases:
+          - selenoid-ui
+
+  jenkins:
+    build:
+      context: .
+      dockerfile: ./jenkins/Dockerfile.jenkins
+    container_name: jenkins
+    ports:
+      - "8081:8080"
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    depends_on:
+      - selenoid
+      - selenoid-ui
+    mem_limit: 2g
+    cpus: 1.5
+    networks:
+      custom_net:
+        aliases:
+          - jenkins
+
+  allure:
+    image: frankescobar/allure-docker-service
+    container_name: allure
+    ports:
+      - "4040:4040"
+    depends_on:
+      - jenkins
+    environment:
+      CHECK_RESULTS_EVERY_SECONDS: 10
+      KEEP_HISTORY: 1
+      KEEP_HISTORY_LATEST: 5
+      TZ: "Europe/Kiev"
+    volumes:
+      - "./target/allure-results:/app/allure-results"
+      - "./target/allure-report:/app/default-reports"
+    mem_limit: 512m
+    cpus: 0.5
+    networks:
+      custom_net:
+        aliases:
+          - allure
+
+networks:
+  custom_net:
+    name: custom_net
+    driver: bridge
+
+volumes:
+  jenkins_home:
