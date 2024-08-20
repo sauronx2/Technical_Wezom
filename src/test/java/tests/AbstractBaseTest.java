@@ -47,7 +47,7 @@ public abstract class AbstractBaseTest extends Base {
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
             capabilities.setBrowserName("chrome");
-            capabilities.setVersion("123.0");
+            capabilities.setVersion("114.0");
 
             // Используем W3C-совместимые ключи через 'selenoid:options'
             Map<String, Object> selenoidOptions = new HashMap<>();
