@@ -2,14 +2,13 @@ package tests.evrikaTests;
 
 import elements.CabinetElements;
 import io.qameta.allure.Description;
-
 import org.testng.annotations.Test;
 import pages.everikaPages.CheckoutPage;
 import pages.everikaPages.HomePage;
 import tests.AbstractBaseTest;
 import utils.DataProviderCredentials;
 
-public class TestRegistration extends AbstractBaseTest {
+public class TestRegistration1 extends AbstractBaseTest {
     public final String homePageUrl = "https://evrika.wezom.agency/";
 
     @Test(dataProvider = "randomUserDataRegistration", dataProviderClass = DataProviderCredentials.class)
