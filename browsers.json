@@ -6,14 +6,7 @@
         "image": "selenoid/chrome:126.0",
         "port": "4444",
         "path": "/",
-        "env": ["ENABLE_VNC=true", "ENABLE_VIDEO=true"],
-        "video": {
-          "destination": "/opt/selenoid/video",
-          "name": "video.mp4"
-        },
-        "resources": {
-          "shm_size": "1gb"
-        }
+        "env": ["ENABLE_VNC=true", "ENABLE_VIDEO=true"]
       }
     }
   }

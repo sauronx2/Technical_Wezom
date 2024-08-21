@@ -1,0 +1,76 @@
+pipeline {
+    agent any
+
+    environment {
+        MAVEN_HOME = tool(name: 'mvn-3.9.9', type: 'maven')
+        JAVA_HOME = tool(name: 'java-18', type: 'jdk')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/sauronx2/Technical_Wezom', branch: 'master'
+            }
+        }
+
+        stage('Clean Allure Results') {
+            steps {
+                script {
+                    // Очищаем директорию с результатами перед началом тестов
+                    sh 'rm -rf target/allure-results/*'
+                    // Удаляем предыдущий ZIP-файл, если он существует
+                    sh 'rm -f allure-results.zip'
+                }
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                script {
+                    sh "${MAVEN_HOME}/bin/mvn -DsuiteXmlFile=registration.xml -DuseSelenoid=true test"
+                }
+            }
+        }
+
+        stage('Generate Allure Report') {
+            steps {
+                script {
+                    // Генерируем Allure отчет по результатам текущего запуска
+                    sh "${MAVEN_HOME}/bin/mvn allure:report"
+                }
+            }
+        }
+
+        stage('Package Allure Results') {
+            steps {
+                script {
+                    // Упаковываем директорию allure-results в ZIP-файл
+                    sh 'zip -r allure-results.zip target/allure-results'
+                }
+            }
+        }
+
+        stage('Archive Allure Results') {
+            steps {
+                script {
+                    // Архивируем только ZIP-файл с результатами
+                    archiveArtifacts artifacts: 'allure-results.zip', allowEmptyArchive: false
+                }
+            }
+        }
+
+        stage('Publish Allure Report') {
+            steps {
+                // Публикуем Allure отчет по текущему прогону
+                allure includeProperties: false, jdk: '', reportBuildPolicy: 'ALWAYS', results: [[path: 'target/allure-results']]
+            }
+        }
+    }
+
+    post {
+        always {
+            // Архивируем только ZIP-файл с результатами
+            archiveArtifacts artifacts: 'allure-results.zip', allowEmptyArchive: false
+        }
+    }
+}

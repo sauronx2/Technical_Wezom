@@ -2,28 +2,20 @@ services:
   selenoid:
     image: aerokube/selenoid:latest-release
     container_name: selenoid
+    privileged: true
     ports:
       - "4444:4444"
-    environment:
-      - "OVERRIDE_VIDEO_OUTPUT_DIR=/opt/selenoid/video"
-      - "LOG_LEVEL=DEBUG"  # Увеличиваем уровень логирования
     volumes:
+      - "./browsers.json:/etc/selenoid/browsers.json"
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - "./config/browsers.json:/etc/selenoid/browsers.json"
-      - "./selenoid/video:/opt/selenoid/video"
-      - "./selenoid/logs:/opt/selenoid/logs"
-    command: ["-conf", "/etc/selenoid/browsers.json",
-              "-limit", "20",
-              "-retry-count", "1000",
-              "-video-output-dir", "/opt/selenoid/video",
-              "-log-output-dir", "/opt/selenoid/logs",
-              "-max-timeout", "5m",
-              "-session-attempt-timeout", "2m",
-              "-timeout", "2m",
-              "-service-startup-timeout", "2m",
-              "-container-network", "custom_net"]
-    mem_limit: 1g
-    cpus: 1.0
+    command: [ "-conf", "/etc/selenoid/browsers.json",
+               "-limit", "20",
+               "-retry-count", "1000",
+               "-max-timeout", "5m",
+               "-session-attempt-timeout", "2m",
+               "-timeout", "2m",
+               "-service-startup-timeout", "2m",
+               "-container-network", "custom_net" ]
     networks:
       custom_net:
         aliases:
@@ -32,13 +24,12 @@ services:
   selenoid-ui:
     image: aerokube/selenoid-ui:latest-release
     container_name: selenoid-ui
+    privileged: true
     ports:
       - "8080:8080"
     depends_on:
       - selenoid
     command: -selenoid-uri 'http://selenoid:4444'
-    mem_limit: 512m
-    cpus: 0.5
     networks:
       custom_net:
         aliases:
@@ -49,19 +40,17 @@ services:
       context: .
       dockerfile: ./jenkins/Dockerfile.jenkins
     container_name: jenkins
+    privileged: true
     ports:
       - "8081:8080"
       - "50000:50000"
     volumes:
       - jenkins_home:/var/jenkins_home
+      - allure_results:/var/jenkins_home/workspace/automation-framework/target/allure-results
+      - allure_reports:/var/jenkins_home/workspace/automation-framework/target/allure-report
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
-    depends_on:
-      - selenoid
-      - selenoid-ui
-    mem_limit: 2g
-    cpus: 1.5
     networks:
       custom_net:
         aliases:
@@ -70,24 +59,42 @@ services:
   allure:
     image: frankescobar/allure-docker-service
     container_name: allure
+    privileged: true
     ports:
-      - "4040:4040"
+      - "5050:5050"
     depends_on:
       - jenkins
     environment:
       CHECK_RESULTS_EVERY_SECONDS: 10
       KEEP_HISTORY: 1
-      KEEP_HISTORY_LATEST: 5
+      KEEP_HISTORY_LATEST: 10
       TZ: "Europe/Kiev"
     volumes:
-      - "./target/allure-results:/app/allure-results"
-      - "./target/allure-report:/app/default-reports"
-    mem_limit: 512m
-    cpus: 0.5
+      - allure_results:/app/allure-results
+      - allure_reports:/app/allure-report
     networks:
       custom_net:
         aliases:
           - allure
+
+  allure-ui:
+    image: frankescobar/allure-docker-service-ui
+    container_name: allure-ui
+    privileged: true
+    depends_on:
+      - allure
+    environment:
+      ALLURE_DOCKER_PUBLIC_API_URL: "http://localhost:5050"
+      ALLURE_DOCKER_PUBLIC_API_URL_PREFIX: ""
+    volumes:
+      - allure_results:/app/allure-results
+      - allure_reports:/app/allure-report
+    ports:
+      - "5252:5252"
+    networks:
+      custom_net:
+        aliases:
+          - allure-ui
 
 networks:
   custom_net:
@@ -96,3 +103,5 @@ networks:
 
 volumes:
   jenkins_home:
+  allure_results:   # Тома для Allure результатов и отчетов
+  allure_reports:
