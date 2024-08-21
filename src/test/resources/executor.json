@@ -1,0 +1,10 @@
+{
+  "name": "Jenkins",
+  "type": "jenkins",
+  "reportName": "Allure Report",
+  "url": "http://jenkins_url/job/${JOB_NAME}/${BUILD_NUMBER}",
+  "buildOrder": "${BUILD_NUMBER}",
+  "buildName": "#${BUILD_NUMBER}",
+  "buildUrl": "http://jenkins_url/job/${JOB_NAME}/${BUILD_NUMBER}",
+  "reportUrl": "http://jenkins_url/job/${JOB_NAME}/${BUILD_NUMBER}/allure/"
+}
