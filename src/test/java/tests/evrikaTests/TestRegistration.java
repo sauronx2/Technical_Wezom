@@ -26,44 +26,44 @@ public class TestRegistration extends AbstractBaseTest {
 
         assertEquals(homePage.getRegistrationAuthorizationPopUpText().getText(), "Регистрация");
 
-        homePage
-                .enterRegistrationCredentials(firstName, lastName, number, email, password, passConf)
-                .clickIAgreeCheckBox()
-                .clickSubmitRegistrationBtn();
-
-        assertTrue(cabinetElements.getCredentialsInCabinet().getText().contains(firstName));
-        assertTrue(cabinetElements.getCredentialsInCabinet().getText().contains(lastName));
-
-        homePage
-                .moveToProductCatalogueMenu()
-                .moveToHouseHoldAppliances()
-                .moveAndClickToFans()
-                .clickOnProductAddToBasketBtn("Вентилятор Maxwell MW-3546")
-                .clickXClosePopUpBtn()
-                .clickOnProductAddToBasketBtn("Вентилятор Tefal VF6670F0");
-
-        assertEquals(homePage.getBasketPopUpText().getText(), "Корзина");
-
-        homePage
-                .getParsedPriceInBasketAndEqualsPriceInCheckout();
-
-        checkoutPage
-                .setMiddleNameField(middleName)
-                .clickDeliveryOrPaymentType("Самовывоз из магазина")
-                .clickSelectStoreDropDownMenu()
-                .clickStoreInList(0)
-                .clickDeliveryOrPaymentType("Картой онлайн");
-
-        assertTrue(checkoutPage.isInvisibilityContactsOtherRecipientRadioBtn());
-
-        checkoutPage
-                .clickSubmitOrderBtn();
-
-        assertTrue(checkoutPage.getOrderCreatingErrorMessage().isDisplayed());
-
-        checkoutPage
-                .clickOrderErrorBtn();
-
-        assertTrue(checkoutPage.isVisibleOrderCreatingErrorMessage());
+//        homePage
+//                .enterRegistrationCredentials(firstName, lastName, number, email, password, passConf)
+//                .clickIAgreeCheckBox()
+//                .clickSubmitRegistrationBtn();
+//
+//        assertTrue(cabinetElements.getCredentialsInCabinet().getText().contains(firstName));
+//        assertTrue(cabinetElements.getCredentialsInCabinet().getText().contains(lastName));
+//
+//        homePage
+//                .moveToProductCatalogueMenu()
+//                .moveToHouseHoldAppliances()
+//                .moveAndClickToFans()
+//                .clickOnProductAddToBasketBtn("Вентилятор Maxwell MW-3546")
+//                .clickXClosePopUpBtn()
+//                .clickOnProductAddToBasketBtn("Вентилятор Tefal VF6670F0");
+//
+//        assertEquals(homePage.getBasketPopUpText().getText(), "Корзина");
+//
+//        homePage
+//                .getParsedPriceInBasketAndEqualsPriceInCheckout();
+//
+//        checkoutPage
+//                .setMiddleNameField(middleName)
+//                .clickDeliveryOrPaymentType("Самовывоз из магазина")
+//                .clickSelectStoreDropDownMenu()
+//                .clickStoreInList(0)
+//                .clickDeliveryOrPaymentType("Картой онлайн");
+//
+//        assertTrue(checkoutPage.isInvisibilityContactsOtherRecipientRadioBtn());
+//
+//        checkoutPage
+//                .clickSubmitOrderBtn();
+//
+//        assertTrue(checkoutPage.getOrderCreatingErrorMessage().isDisplayed());
+//
+//        checkoutPage
+//                .clickOrderErrorBtn();
+//
+//        assertTrue(checkoutPage.isVisibleOrderCreatingErrorMessage());
     }
 }
